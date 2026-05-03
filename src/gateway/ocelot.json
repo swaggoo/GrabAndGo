@@ -1,0 +1,91 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/openapi/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "identity-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/identity/openapi/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/openapi/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "catalog-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/products/openapi/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/openapi/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "media-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/media/openapi/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/openapi/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "order-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/orders/openapi/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/openapi/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "analytics-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/analytics/openapi/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/orders/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "order-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/orders/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/products/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "catalog-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/products/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/uploads/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "media-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/media/uploads/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/media/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "media-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/media/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "identity-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/auth/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "identity-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/user/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch", "Head" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/business/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [ { "Host": "identity-api", "Port": 8080 } ],
+      "UpstreamPathTemplate": "/api/business/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Patch", "Head" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5010"
+  }
+}

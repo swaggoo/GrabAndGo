@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Scalar.AspNetCore" Version="2.14.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\GrabAndGo.BuildingBlocks\GrabAndGo.BuildingBlocks.csproj" />
+    <ProjectReference Include="..\GrabAndGo.Order.Application\GrabAndGo.Order.Application.csproj" />
+    <ProjectReference Include="..\GrabAndGo.Order.Infrastructure\GrabAndGo.Order.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

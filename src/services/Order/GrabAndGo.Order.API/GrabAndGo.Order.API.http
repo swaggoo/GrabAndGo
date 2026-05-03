@@ -1,0 +1,6 @@
+@GrabAndGo.Order.API_HostAddress = http://localhost:5178
+
+GET {{GrabAndGo.Order.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
