@@ -19,11 +19,6 @@ public class Business
     public string? Email { get; set; }
     public string? Website { get; set; }
     
-    public string Category { get; set; } = default!;
-    
-    public float? Rating { get; set; }
-    public int TotalRatings { get; set; }
-    
     [System.ComponentModel.DataAnnotations.Schema.Column("TotalOrdersSaved")]
     public int TotalOrders { get; set; }
     

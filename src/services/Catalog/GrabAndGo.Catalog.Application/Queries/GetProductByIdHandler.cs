@@ -1,4 +1,5 @@
 using GrabAndGo.Catalog.Application.Dtos;
+using GrabAndGo.Catalog.Application.Extensions;
 using GrabAndGo.Catalog.Infrastructure.Repositories;
 using MediatR;
 
@@ -18,7 +19,7 @@ public class GetProductByIdHandler(
 
         var business = await businessRepository.GetBusinessById(product.BusinessId);
         var businessSummary = business != null 
-            ? new BusinessSummaryDto(business.Id.ToString(), business.Name, business.LogoUrl, business.Rating)
+            ? new BusinessSummaryDto(business.Id.ToString(), business.Name, business.LogoUrl)
             : null;
 
         var category = !string.IsNullOrEmpty(product.CategoryId) 
@@ -38,6 +39,7 @@ public class GetProductByIdHandler(
             product.PickupStart,
             product.PickupEnd,
             product.Quantity,
+            product.Rating.ToDto(),
             businessSummary,
             categoryDto
         );

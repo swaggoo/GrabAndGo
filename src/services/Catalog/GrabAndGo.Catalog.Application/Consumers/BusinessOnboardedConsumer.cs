@@ -27,7 +27,6 @@ public class BusinessOnboardedConsumer(
             existing.CoverImageUrl = @event.CoverImageUrl;
             existing.Phone = @event.Phone;
             existing.Website = @event.Website;
-            existing.Category = @event.Category;
             existing.TotalOrders = @event.TotalOrders;
             existing.Address = new BusinessAddress
             {
@@ -54,7 +53,6 @@ public class BusinessOnboardedConsumer(
             Description = @event.Description,
             LogoUrl = @event.LogoUrl,
             CoverImageUrl = @event.CoverImageUrl,
-            Category = @event.Category,
             Phone = @event.Phone,
             Website = @event.Website,
             Email = @event.Email,

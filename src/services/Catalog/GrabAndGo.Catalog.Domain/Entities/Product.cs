@@ -20,6 +20,8 @@ public class Product
     
     public int Quantity { get; set; }
     public bool IsActive { get; set; } = true;
+    
+    public Rating Rating { get; set; } = new();
 
     // Navigation
     public Business Business { get; set; } = default!;

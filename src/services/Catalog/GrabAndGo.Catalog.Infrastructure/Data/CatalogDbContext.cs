@@ -43,6 +43,7 @@ public class CatalogDbContext : DbContext
                   .WithMany(b => b.Products)
                   .HasForeignKey(e => e.BusinessId)
                   .HasPrincipalKey(b => b.BusinessId);
+            entity.OwnsOne(e => e.Rating);
         });
 
         modelBuilder.Entity<Category>(entity =>

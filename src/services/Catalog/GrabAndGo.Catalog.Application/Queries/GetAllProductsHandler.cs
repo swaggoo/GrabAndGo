@@ -1,4 +1,5 @@
 using GrabAndGo.Catalog.Application.Dtos;
+using GrabAndGo.Catalog.Application.Extensions;
 using GrabAndGo.Catalog.Infrastructure.Repositories;
 using MediatR;
 
@@ -49,7 +50,7 @@ public class GetAllProductsHandler : IRequestHandler<GetAllProductsQuery, IEnume
             var business = await _businessRepository.GetBusinessById(businessId!);
             if (business != null)
             {
-                businesses[businessId!] = new BusinessSummaryDto(business.Id.ToString(), business.Name, business.LogoUrl, business.Rating);
+                businesses[businessId!] = new BusinessSummaryDto(business.Id.ToString(), business.Name, business.LogoUrl);
             }
         }
 
@@ -96,6 +97,7 @@ public class GetAllProductsHandler : IRequestHandler<GetAllProductsQuery, IEnume
                 product.PickupStart,
                 product.PickupEnd,
                 product.Quantity,
+                product.Rating.ToDto(),
                 businessSummary,
                 categoryDto,
                 distance

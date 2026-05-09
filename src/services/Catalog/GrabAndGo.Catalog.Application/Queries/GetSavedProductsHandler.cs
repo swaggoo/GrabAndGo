@@ -1,4 +1,5 @@
 using GrabAndGo.Catalog.Application.Dtos;
+using GrabAndGo.Catalog.Application.Extensions;
 using GrabAndGo.Catalog.Infrastructure.Data;
 using GrabAndGo.Catalog.Infrastructure.Repositories;
 using MediatR;
@@ -32,7 +33,7 @@ public class GetSavedProductsHandler(
         foreach (var bid in businessIds)
         {
             var b = await businessRepository.GetBusinessById(bid);
-            if (b != null) businesses[bid] = new BusinessSummaryDto(b.Id.ToString(), b.Name, b.LogoUrl, b.Rating);
+            if (b != null) businesses[bid] = new BusinessSummaryDto(b.Id.ToString(), b.Name, b.LogoUrl);
         }
 
         foreach (var cid in categoryIds)
@@ -56,6 +57,7 @@ public class GetSavedProductsHandler(
                 p.PickupStart,
                 p.PickupEnd,
                 p.Quantity,
+                p.Rating.ToDto(),
                 bSummary,
                 cDto
             ));

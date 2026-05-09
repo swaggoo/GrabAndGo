@@ -24,8 +24,5 @@ public record BusinessDto(
     string? Email,
     string? Website,
     int TotalOrders,
-    float? Rating,
-    int TotalRatings,
-    string Category,
     bool IsVerified
 );

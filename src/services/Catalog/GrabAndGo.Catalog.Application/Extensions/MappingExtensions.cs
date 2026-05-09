@@ -27,10 +27,19 @@ public static class MappingExtensions
             business.Email,
             business.Website,
             business.TotalOrders,
-            business.Rating,
-            business.TotalRatings,
-            business.Category,
             business.IsVerified
+        );
+    }
+
+    public static RatingDto ToDto(this Rating rating)
+    {
+        return new RatingDto(
+            rating.OverallRating,
+            rating.TotalRatings,
+            rating.CollectionRating,
+            rating.QualityRating,
+            rating.VarietyRating,
+            rating.QuantityRating
         );
     }
 }

@@ -5,6 +5,12 @@ namespace GrabAndGo.Catalog.Infrastructure.Data;
 
 public class CatalogContextSeed
 {
+    private class BusinessSeedInfo
+    {
+        public Business Business { get; set; } = default!;
+        public string CategoryName { get; set; } = default!;
+    }
+
     public static void SeedData(CatalogDbContext context)
     {
         context.Products.RemoveRange(context.Products);
@@ -14,15 +20,15 @@ public class CatalogContextSeed
 
         var categories = GetPreconfiguredCategories().ToList();
         context.Categories.AddRange(categories);
-        
-        var businesses = GetPreconfiguredBusinesses().ToList();
-        context.Businesses.AddRange(businesses);
-        
+       
+        var businessInfos = GetPreconfiguredBusinessInfos().ToList();
+        context.Businesses.AddRange(businessInfos.Select(x => x.Business));
+       
         context.SaveChanges();
 
-        var products = GetPreconfiguredProducts(businesses, categories).ToList();
+        var products = GetPreconfiguredProducts(businessInfos, categories).ToList();
         context.Products.AddRange(products);
-        
+       
         context.SaveChanges();
     }
 
@@ -39,7 +45,7 @@ public class CatalogContextSeed
         };
     }
 
-private static IEnumerable<Business> GetPreconfiguredBusinesses()
+    private static IEnumerable<BusinessSeedInfo> GetPreconfiguredBusinessInfos()
     {
         var lvivBusinesses = new List<(string Name, string Cat, string Street, string Lat, string Long)>
         {
@@ -83,32 +89,36 @@ private static IEnumerable<Business> GetPreconfiguredBusinesses()
 
             var businessGuid = Guid.Parse($"602d2149-e773-f2a3-990b-47b{index:D2}0000000");
 
-            return new Business
+            return new BusinessSeedInfo
             {
-                Id = businessGuid, 
-                BusinessId = businessGuid.ToString(),
-                Name = b.Name,
-                Description = $"Найкращий вибір у категорії {b.Cat} у Львові",
-                Category = b.Cat,
-                LogoUrl = logoUrl,
-                CoverImageUrl = coverUrl,
-                Address = new BusinessAddress { Street = b.Street, City = "Lviv", PostalCode = "79000", Country = "Ukraine" },
-                Location = new BusinessLocation { Latitude = double.Parse(b.Lat), Longitude = double.Parse(b.Long) },
-                IsActive = true
+                CategoryName = b.Cat,
+                Business = new Business
+                {
+                    Id = businessGuid,
+                    BusinessId = businessGuid.ToString(),
+                    Name = b.Name,
+                    Description = $"Найкращий вибір у категорії {b.Cat} у Львові",
+                    LogoUrl = logoUrl,
+                    CoverImageUrl = coverUrl,
+                    Address = new BusinessAddress { Street = b.Street, City = "Lviv", PostalCode = "79000", Country = "Ukraine" },
+                    Location = new BusinessLocation { Latitude = double.Parse(b.Lat), Longitude = double.Parse(b.Long) },
+                    IsActive = true
+                }
             };
         });
     }
 
-    private static IEnumerable<Product> GetPreconfiguredProducts(List<Business> businesses, List<Category> categories)
+    private static IEnumerable<Product> GetPreconfiguredProducts(IEnumerable<BusinessSeedInfo> businessInfos, List<Category> categories)
     {
         var products = new List<Product>();
         int productIndex = 0;
 
-        foreach (var biz in businesses)
+        foreach (var info in businessInfos)
         {
-            var category = categories.FirstOrDefault(c => c.Name == biz.Category) ?? categories.First();
+            var biz = info.Business;
+            var category = categories.FirstOrDefault(c => c.Name == info.CategoryName) ?? categories.First();
 
-            string[] productImages = biz.Category switch {
+            string[] productImages = info.CategoryName switch {
                 "Bakery" => new[] { "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=500&q=80", "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500&q=80" },
                 "Groceries" => new[] { "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=500&q=80", "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=500&q=80" },
                 "Meals" => new[] { "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80", "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80" },
@@ -133,12 +143,28 @@ private static IEnumerable<Business> GetPreconfiguredBusinesses()
                     Quantity = 2 + i,
                     PickupStart = DateTime.UtcNow.AddHours(1),
                     PickupEnd = DateTime.UtcNow.AddHours(4),
-                    IsActive = true
+                    IsActive = true,
+                    Rating = GenerateRandomRating()
                 });
                 productIndex++;
             }
         }
 
         return products;
+    }
+
+    private static Rating GenerateRandomRating()
+    {
+        var random = new Random();
+        float overall = (float)(random.NextDouble() * 3.5 + 1.5); // 1.5 to 5.0
+        return new Rating
+        {
+            OverallRating = (float)Math.Round(overall, 1),
+            TotalRatings = random.Next(1, 100),
+            CollectionRating = (float)Math.Round(random.NextDouble() * 3.5 + 1.5, 1),
+            QualityRating = (float)Math.Round(random.NextDouble() * 3.5 + 1.5, 1),
+            VarietyRating = (float)Math.Round(random.NextDouble() * 3.5 + 1.5, 1),
+            QuantityRating = (float)Math.Round(random.NextDouble() * 3.5 + 1.5, 1)
+        };
     }
 }
