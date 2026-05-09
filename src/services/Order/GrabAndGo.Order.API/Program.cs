@@ -1,16 +1,14 @@
-using GrabAndGo.BuildingBlocks.Auth;
+using GrabAndGo.Order.API.Endpoints;
+using GrabAndGo.Order.API.Extensions;
 using GrabAndGo.BuildingBlocks.Middleware;
+using GrabAndGo.Order.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-// Authentication
-builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddOrderServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -23,16 +21,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.MapScalarApiReference(options => 
     {
-        options.WithOpenApiRoutePattern("/openapi/v1.json")
-               .WithDefaultHttpClient(ScalarTarget.Shell, ScalarClient.Curl);
+        options.WithTitle("GrabAndGo Order API")
+               .WithTheme(ScalarTheme.DeepSpace)
+               .WithDefaultHttpClient(ScalarTarget.Shell, ScalarClient.Curl)
+               .WithOpenApiRoutePattern("/openapi/v1.json");
     });
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+// Map Endpoints
+app.MapOrderEndpoints();
+
+// Apply Migrations
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<OrderDbContext>();
+    context.Database.Migrate();
+    OrderContextSeed.SeedData(context);
+}
 
 app.Run();
