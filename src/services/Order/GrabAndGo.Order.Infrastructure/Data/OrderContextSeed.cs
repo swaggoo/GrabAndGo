@@ -94,16 +94,40 @@ public static class OrderContextSeed
 
     private static IEnumerable<Product> GetPreconfiguredProducts()
     {
-        return new List<Product>
+        var products = new List<Product>
         {
             new() { Id = Guid.Parse("b1111111-1111-1111-1111-111111111111"), Name = "Big Mac Meal", Price = 399.00m, BusinessId = "mcdonalds-01" },
             new() { Id = Guid.Parse("b2222222-2222-2222-2222-222222222222"), Name = "Whopper Combo", Price = 420.00m, BusinessId = "burgerking-01" },
-            new() { Id = Guid.Parse("b3333333-3333-3333-3333-333333333333"), Name = "Chicken Sandwich", Price = 245.00m, BusinessId = "popeyes-01" },
-            
-            // Shoco Bakery (Lvivska Maisternia Shokoladu)
-            new() { Id = Guid.Parse("602d2149-e773-f2a3-990b-47c000000000"), Name = "Lvivska Maisternia Shokoladu Surprise Bag 1", Price = 199.00m, BusinessId = "602d2149-e773-f2a3-990b-47b000000000" },
-            new() { Id = Guid.Parse("602d2149-e773-f2a3-990b-47c010000000"), Name = "Lvivska Maisternia Shokoladu Surprise Bag 2", Price = 219.00m, BusinessId = "602d2149-e773-f2a3-990b-47b000000000" }
+            new() { Id = Guid.Parse("b3333333-3333-3333-3333-333333333333"), Name = "Chicken Sandwich", Price = 245.00m, BusinessId = "popeyes-01" }
         };
+
+        var lvivBusinesses = new List<string>
+        {
+            "Lvivska Maisternia Shokoladu", "Silpo Rynok", "Baczewski Restaurant", "Svoyi Bakery", "ATB Market",
+            "Meat Market №1", "Fresh Veggie Lviv", "Grand Cafe Leopolis", "Rukavychka", "Lviv Cakes",
+            "Eco Lavka", "Fish Hub", "Galician Bakery", "Urban Food Lviv", "Prostir Coffee & Pastry"
+        };
+
+        int productIndex = 0;
+        for (int bizIndex = 0; bizIndex < lvivBusinesses.Count; bizIndex++)
+        {
+            var bizName = lvivBusinesses[bizIndex];
+            var businessId = $"602d2149-e773-f2a3-990b-47b{bizIndex:D2}0000000";
+
+            for (int i = 1; i <= 2; i++)
+            {
+                products.Add(new Product
+                {
+                    Id = Guid.Parse($"602d2149-e773-f2a3-990b-47e{productIndex:D2}0000000"),
+                    BusinessId = businessId,
+                    Name = $"{bizName} Surprise Bag {i}",
+                    Price = 199.00M + (productIndex * 20)
+                });
+                productIndex++;
+            }
+        }
+
+        return products;
     }
 
     private static IEnumerable<Domain.Entities.Order> GetPreconfiguredOrders(List<Product> products)

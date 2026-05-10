@@ -1,5 +1,7 @@
+using GrabAndGo.BuildingBlocks.Events;
 using GrabAndGo.Catalog.Domain.Entities;
 using GrabAndGo.Catalog.Infrastructure.Repositories;
+using MassTransit;
 using MediatR;
 
 namespace GrabAndGo.Catalog.Application.Commands;
@@ -9,12 +11,14 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Produc
     private readonly IProductRepository _productRepository;
     private readonly IBusinessRepository _businessRepository;
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public CreateProductHandler(IProductRepository productRepository, IBusinessRepository businessRepository, ICategoryRepository categoryRepository)
+    public CreateProductHandler(IProductRepository productRepository, IBusinessRepository businessRepository, ICategoryRepository categoryRepository, IPublishEndpoint publishEndpoint)
     {
         _productRepository = productRepository;
         _businessRepository = businessRepository;
         _categoryRepository = categoryRepository;
+        _publishEndpoint = publishEndpoint;
     }
 
     public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -47,6 +51,16 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Produc
         };
 
         await _productRepository.CreateProduct(product);
+
+        await _publishEndpoint.Publish(new ProductCreatedEvent(
+            product.Id,
+            product.Name,
+            product.Description,
+            product.Price,
+            product.ImageUrl,
+            product.BusinessId
+        ), cancellationToken);
+
         return product;
     }
 }

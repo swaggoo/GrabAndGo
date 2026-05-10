@@ -132,7 +132,7 @@ public class CatalogContextSeed
             {
                 products.Add(new Product
                 {
-                    Id = Guid.Parse($"602d2149-e773-f2a3-990b-47c{productIndex:D2}0000000"),
+                    Id = Guid.Parse($"602d2149-e773-f2a3-990b-47e{productIndex:D2}0000000"),
                     BusinessId = biz.BusinessId,
                     CategoryId = category.Id.ToString(),
                     Name = $"{biz.Name} Surprise Bag {i}",

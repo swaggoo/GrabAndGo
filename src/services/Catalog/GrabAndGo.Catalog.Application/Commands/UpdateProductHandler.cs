@@ -1,5 +1,7 @@
+using GrabAndGo.BuildingBlocks.Events;
 using GrabAndGo.Catalog.Domain.Entities;
 using GrabAndGo.Catalog.Infrastructure.Repositories;
+using MassTransit;
 using MediatR;
 
 namespace GrabAndGo.Catalog.Application.Commands;
@@ -9,12 +11,14 @@ public class UpdateProductHandler : IRequestHandler<UpdateProductCommand, bool>
     private readonly IProductRepository _productRepository;
     private readonly IBusinessRepository _businessRepository;
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public UpdateProductHandler(IProductRepository productRepository, IBusinessRepository businessRepository, ICategoryRepository categoryRepository)
+    public UpdateProductHandler(IProductRepository productRepository, IBusinessRepository businessRepository, ICategoryRepository categoryRepository, IPublishEndpoint publishEndpoint)
     {
         _productRepository = productRepository;
         _businessRepository = businessRepository;
         _categoryRepository = categoryRepository;
+        _publishEndpoint = publishEndpoint;
     }
 
     public async Task<bool> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
@@ -47,6 +51,19 @@ public class UpdateProductHandler : IRequestHandler<UpdateProductCommand, bool>
             IsActive = request.IsActive
         };
 
-        return await _productRepository.UpdateProduct(product);
+        var result = await _productRepository.UpdateProduct(product);
+
+        if (result)
+        {
+            await _publishEndpoint.Publish(new ProductUpdatedEvent(
+                product.Id,
+                product.Name,
+                product.Description,
+                product.Price,
+                product.ImageUrl
+            ), cancellationToken);
+        }
+
+        return result;
     }
 }

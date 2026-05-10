@@ -1,10 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\GrabAndGo.BuildingBlocks\GrabAndGo.BuildingBlocks.csproj" />
     <ProjectReference Include="..\GrabAndGo.Order.Domain\GrabAndGo.Order.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MassTransit" Version="8.3.7" />
     <PackageReference Include="MediatR" Version="14.1.0" />
   </ItemGroup>
 

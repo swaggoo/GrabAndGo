@@ -1,4 +1,6 @@
 using GrabAndGo.BuildingBlocks.Auth;
+using GrabAndGo.BuildingBlocks.MassTransit;
+using GrabAndGo.Order.Application.Consumers;
 using GrabAndGo.Order.Application.Queries;
 using GrabAndGo.Order.Domain.Repositories;
 using GrabAndGo.Order.Infrastructure.Data;
@@ -28,6 +30,9 @@ public static class HostingExtensions
 
         // Application
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetOrdersQuery).Assembly));
+
+        // Message Bus
+        services.AddMessageBus(configuration, typeof(ProductCreatedConsumer).Assembly);
 
         return services;
     }

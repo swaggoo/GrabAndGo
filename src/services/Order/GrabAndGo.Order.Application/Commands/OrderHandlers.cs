@@ -11,6 +11,13 @@ public class CreateOrderHandler(IOrderRepository orderRepository) : IRequestHand
 {
     public async Task<OrderDto> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
+        var product = await orderRepository.GetProductByIdAsync(request.ProductId);
+        if (product == null)
+        {
+            // For MVP we throw, in production we'd return a Result object or custom exception
+            throw new KeyNotFoundException($"Product with ID {request.ProductId} not found.");
+        }
+
         var order = new Domain.Entities.Order
         {
             Id = Guid.NewGuid(),
@@ -18,13 +25,11 @@ public class CreateOrderHandler(IOrderRepository orderRepository) : IRequestHand
             UserId = request.UserId,
             BusinessId = request.BusinessId,
             ProductId = request.ProductId,
+            Product = product,
             TotalAmount = request.TotalAmount,
             Status = OrderStatus.NEW,
             Date = DateTime.UtcNow
         };
-
-        // In a real scenario, we'd fetch the product details from Catalog service or local replica
-        // For now, we assume it's attached or handled by the repository
         
         await orderRepository.AddAsync(order);
         await orderRepository.SaveChangesAsync();

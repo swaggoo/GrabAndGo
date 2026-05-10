@@ -21,7 +21,7 @@ public static class MappingExtensions
         return new OrderDto(
             order.Id,
             order.OrderNum,
-            order.Product.ToDto(),
+            order.Product?.ToDto() ?? new ProductDto(order.ProductId, "Unknown Product", null, 0, null),
             order.TotalAmount,
             order.Status,
             order.Date

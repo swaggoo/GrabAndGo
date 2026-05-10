@@ -23,6 +23,11 @@ public class OrderRepository(OrderDbContext context) : IOrderRepository
             .FirstOrDefaultAsync(o => o.Id == id);
     }
 
+    public async Task<Product?> GetProductByIdAsync(Guid id)
+    {
+        return await context.Products.FindAsync(id);
+    }
+
     public async Task AddAsync(Domain.Entities.Order order)
     {
         await context.Orders.AddAsync(order);
@@ -32,6 +37,26 @@ public class OrderRepository(OrderDbContext context) : IOrderRepository
     {
         context.Orders.Update(order);
         await Task.CompletedTask;
+    }
+
+    public async Task AddProductAsync(Product product)
+    {
+        await context.Products.AddAsync(product);
+    }
+
+    public async Task UpdateProductAsync(Product product)
+    {
+        context.Products.Update(product);
+        await Task.CompletedTask;
+    }
+
+    public async Task DeleteProductAsync(Guid id)
+    {
+        var product = await context.Products.FindAsync(id);
+        if (product != null)
+        {
+            context.Products.Remove(product);
+        }
     }
 
     public async Task SaveChangesAsync()
