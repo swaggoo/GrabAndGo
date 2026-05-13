@@ -23,7 +23,7 @@ public class UpdateProductHandler : IRequestHandler<UpdateProductCommand, bool>
 
     public async Task<bool> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var business = await _businessRepository.GetBusiness(request.BusinessId);
+        var business = await _businessRepository.GetBusinessById(request.BusinessId);
         if (business == null)
         {
             throw new Exception("Business not found");

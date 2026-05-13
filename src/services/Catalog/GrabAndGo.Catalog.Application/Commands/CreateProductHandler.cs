@@ -23,7 +23,7 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, Produc
 
     public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        var business = await _businessRepository.GetBusiness(request.BusinessId);
+        var business = await _businessRepository.GetBusinessById(request.BusinessId);
         if (business == null)
         {
             throw new Exception("Business not found");
