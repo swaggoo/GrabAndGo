@@ -172,9 +172,30 @@ public static class OrderContextSeed
     {
         var products = new List<Product>
         {
-            new() { Id = Guid.Parse("b1111111-1111-1111-1111-111111111111"), Name = "Big Mac Meal", Price = 399.00m, BusinessId = "mcdonalds-01" },
-            new() { Id = Guid.Parse("b2222222-2222-2222-2222-222222222222"), Name = "Whopper Combo", Price = 420.00m, BusinessId = "burgerking-01" },
-            new() { Id = Guid.Parse("b3333333-3333-3333-3333-333333333333"), Name = "Chicken Sandwich", Price = 245.00m, BusinessId = "popeyes-01" }
+            new() { 
+                Id = Guid.Parse("b1111111-1111-1111-1111-111111111111"), 
+                Name = "Big Mac Meal", 
+                Description = "The iconic Big Mac Meal - a double layer of sear-sizzled 100% pure beef mingled with special sauce.",
+                Price = 399.00m, 
+                ImageUrl = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80",
+                BusinessId = "mcdonalds-01" 
+            },
+            new() { 
+                Id = Guid.Parse("b2222222-2222-2222-2222-222222222222"), 
+                Name = "Whopper Combo", 
+                Description = "Our signature Whopper sandwich with a large side of French fries and a drink.",
+                Price = 420.00m, 
+                ImageUrl = "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=500&q=80",
+                BusinessId = "burgerking-01" 
+            },
+            new() { 
+                Id = Guid.Parse("b3333333-3333-3333-3333-333333333333"), 
+                Name = "Chicken Sandwich", 
+                Description = "Crispy, juicy chicken breast on a toasted brioche bun with pickles and mayo.",
+                Price = 245.00m, 
+                ImageUrl = "https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=500&q=80",
+                BusinessId = "popeyes-01" 
+            }
         };
 
         var lvivBusinesses = new List<string>
@@ -190,6 +211,35 @@ public static class OrderContextSeed
             var bizName = lvivBusinesses[bizIndex];
             var businessId = $"602d2149-e773-f2a3-990b-47b{bizIndex:D2}0000000";
 
+            string category = bizName switch {
+                "SHOco." => "Bakery",
+                "Svoyi Bakery" => "Bakery",
+                "Galician Bakery" => "Bakery",
+                "Prostir Coffee & Pastry" => "Bakery",
+                "Silpo Rynok" => "Groceries",
+                "ATB Market" => "Groceries",
+                "Rukavychka" => "Groceries",
+                "Baczewski Restaurant" => "Meals",
+                "Urban Food Lviv" => "Meals",
+                "Grand Cafe Leopolis" => "Desserts",
+                "Lviv Cakes" => "Desserts",
+                "Meat Market №1" => "Meat & Fish",
+                "Fish Hub" => "Meat & Fish",
+                "Fresh Veggie Lviv" => "Vegetables",
+                "Eco Lavka" => "Vegetables",
+                _ => "Groceries"
+            };
+
+            string[] productImages = category switch {
+                "Bakery" => new[] { "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=500&q=80", "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500&q=80" },
+                "Groceries" => new[] { "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=500&q=80", "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=500&q=80" },
+                "Meals" => new[] { "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80", "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500&q=80" },
+                "Desserts" => new[] { "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=500&q=80", "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=500&q=80" },
+                "Meat & Fish" => new[] { "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=500&q=80", "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?w=500&q=80" },
+                "Vegetables" => new[] { "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&q=80", "https://images.unsplash.com/photo-1590779033100-9f60a05a01bc?w=500&q=80" },
+                _ => new[] { "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80", "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=500&q=80" }
+            };
+
             for (int i = 1; i <= 2; i++)
             {
                 products.Add(new Product
@@ -197,6 +247,8 @@ public static class OrderContextSeed
                     Id = Guid.Parse($"602d2149-e773-f2a3-990b-47e{productIndex:D2}0000000"),
                     BusinessId = businessId,
                     Name = $"{bizName} Surprise Bag {i}",
+                    Description = $"Свіжа пропозиція від {bizName}. Тільки сьогодні!",
+                    ImageUrl = productImages[(i - 1) % productImages.Length],
                     Price = 199.00M + (productIndex * 20)
                 });
                 productIndex++;
