@@ -36,6 +36,7 @@ public static class OrderEndpoints
                 ? Results.Ok(ApiResponse<OrderDto>.SuccessResult(result)) 
                 : Results.NotFound(ApiResponse<object>.FailureResult("Order not found"));
         })
+        .WithName("GetOrderById")
         .RequireAuthorization()
         .Produces<ApiResponse<OrderDto>>(StatusCodes.Status200OK)
         .Produces<ApiResponse<object>>(StatusCodes.Status404NotFound)
@@ -50,7 +51,6 @@ public static class OrderEndpoints
             var result = await mediator.Send(command);
             return Results.CreatedAtRoute("GetOrderById", new { id = result.Id }, ApiResponse<OrderDto>.SuccessResult(result));
         })
-        .WithName("GetOrderById")
         .RequireAuthorization()
         .Produces<ApiResponse<OrderDto>>(StatusCodes.Status201Created)
         .WithOpenApi(operation => {
@@ -69,10 +69,8 @@ public static class OrderEndpoints
             return operation;
         });
 
-        group.MapPatch("/{id}/status", async (Guid id, [FromBody] UpdateOrderStatusCommand command, IMediator mediator) =>
+        group.MapPatch("/status", async ([FromBody] UpdateOrderStatusCommand command, IMediator mediator) =>
         {
-            if (id != command.OrderId) return Results.BadRequest(ApiResponse<object>.FailureResult("Order ID mismatch"));
-            
             var result = await mediator.Send(command);
             return result 
                 ? Results.Ok(ApiResponse<bool>.SuccessResult(true, "Order status updated successfully")) 
