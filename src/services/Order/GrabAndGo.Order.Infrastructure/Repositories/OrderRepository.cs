@@ -11,7 +11,7 @@ public class OrderRepository(OrderDbContext context) : IOrderRepository
     {
         return await context.Orders
             .Include(o => o.Product)
-            .Where(o => o.UserId == userId)
+            .Where(o => o.UserId == userId || o.BusinessId == userId)
             .OrderByDescending(o => o.Date)
             .ToListAsync();
     }

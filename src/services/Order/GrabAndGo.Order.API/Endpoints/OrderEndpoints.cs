@@ -23,9 +23,9 @@ public static class OrderEndpoints
         .RequireAuthorization()
         .Produces<ApiResponse<IEnumerable<OrderDto>>>(StatusCodes.Status200OK)
         .WithOpenApi(operation => {
-            operation.Summary = "Get orders for a user";
-            operation.Description = "Returns a list of all orders placed by the specified user.";
-            operation.Parameters[0].Description = "The unique identifier of the user.";
+            operation.Summary = "Get orders for a user or business";
+            operation.Description = "Returns a list of all orders associated with the specified user ID (as customer) or business ID (as provider).";
+            operation.Parameters[0].Description = "The unique identifier of the user or business.";
             return operation;
         });
 

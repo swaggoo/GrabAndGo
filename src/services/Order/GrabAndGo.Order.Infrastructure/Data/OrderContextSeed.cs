@@ -24,7 +24,83 @@ public static class OrderContextSeed
         const string mockUserId = "6611c298-f744-421e-88b5-99369ce67e52";
         context.Orders.AddRange(GetOrdersForMockUser(mockUserId, products));
         
+        context.Orders.AddRange(GetShocoSpecificOrders(products));
+        
         context.SaveChanges();
+    }
+
+    private static IEnumerable<Domain.Entities.Order> GetShocoSpecificOrders(List<Product> products)
+    {
+        var shocoId = "602d2149-e773-f2a3-990b-47b000000000";
+        var shocoProducts = products.Where(p => p.BusinessId == shocoId).ToList();
+        
+        if (!shocoProducts.Any()) return Enumerable.Empty<Domain.Entities.Order>();
+
+        var random = new Random();
+        var customerIds = new[] 
+        { 
+            "6611c298-f744-421e-88b5-99369ce67e52", // John Doe
+            "7722d3a9-0855-532f-99c6-0047a0000001", // Jane Doe
+            "8833e4b0-1966-643g-00d7-1158b1111112"  // Mock User 2 (External)
+        };
+
+        var orders = new List<Domain.Entities.Order>();
+
+        // Completed orders
+        for (int i = 0; i < 5; i++)
+        {
+            var product = shocoProducts[random.Next(shocoProducts.Count)];
+            orders.Add(new Domain.Entities.Order
+            {
+                Id = Guid.NewGuid(),
+                OrderNum = $"#S{random.Next(1000, 9999)}",
+                UserId = customerIds[random.Next(customerIds.Length)],
+                BusinessId = shocoId,
+                ProductId = product.Id,
+                TotalAmount = product.Price,
+                Status = OrderStatus.COMPLETED,
+                Date = DateTime.UtcNow.AddDays(-random.Next(1, 10)).AddHours(-random.Next(1, 24))
+            });
+        }
+
+        // Active orders
+        orders.Add(new Domain.Entities.Order
+        {
+            Id = Guid.NewGuid(),
+            OrderNum = $"#S{random.Next(1000, 9999)}",
+            UserId = customerIds[0],
+            BusinessId = shocoId,
+            ProductId = shocoProducts[0].Id,
+            TotalAmount = shocoProducts[0].Price,
+            Status = OrderStatus.READY_FOR_PICKUP,
+            Date = DateTime.UtcNow.AddHours(-2)
+        });
+
+        orders.Add(new Domain.Entities.Order
+        {
+            Id = Guid.NewGuid(),
+            OrderNum = $"#S{random.Next(1000, 9999)}",
+            UserId = customerIds[1],
+            BusinessId = shocoId,
+            ProductId = shocoProducts[1 % shocoProducts.Count].Id,
+            TotalAmount = shocoProducts[1 % shocoProducts.Count].Price,
+            Status = OrderStatus.ACCEPTED,
+            Date = DateTime.UtcNow.AddMinutes(-45)
+        });
+
+        orders.Add(new Domain.Entities.Order
+        {
+            Id = Guid.NewGuid(),
+            OrderNum = $"#S{random.Next(1000, 9999)}",
+            UserId = customerIds[2],
+            BusinessId = shocoId,
+            ProductId = shocoProducts[0].Id,
+            TotalAmount = shocoProducts[0].Price,
+            Status = OrderStatus.NEW,
+            Date = DateTime.UtcNow.AddMinutes(-10)
+        });
+
+        return orders;
     }
 
     private static IEnumerable<Domain.Entities.Order> GetOrdersForMockUser(string userId, List<Product> products)
@@ -103,7 +179,7 @@ public static class OrderContextSeed
 
         var lvivBusinesses = new List<string>
         {
-            "Lvivska Maisternia Shokoladu", "Silpo Rynok", "Baczewski Restaurant", "Svoyi Bakery", "ATB Market",
+            "SHOco.", "Silpo Rynok", "Baczewski Restaurant", "Svoyi Bakery", "ATB Market",
             "Meat Market №1", "Fresh Veggie Lviv", "Grand Cafe Leopolis", "Rukavychka", "Lviv Cakes",
             "Eco Lavka", "Fish Hub", "Galician Bakery", "Urban Food Lviv", "Prostir Coffee & Pastry"
         };

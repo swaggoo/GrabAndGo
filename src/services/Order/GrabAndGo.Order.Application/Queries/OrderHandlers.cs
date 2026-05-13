@@ -11,7 +11,6 @@ public class GetOrdersHandler(IOrderRepository orderRepository) : IRequestHandle
     {
         var orders = await orderRepository.GetOrdersAsync(request.UserId);
         
-        // Apply filtering logic if needed (simplified for now)
         return orders.Select(o => o.ToDto());
     }
 }

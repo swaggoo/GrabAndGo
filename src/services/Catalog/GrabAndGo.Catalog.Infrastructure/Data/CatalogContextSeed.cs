@@ -49,7 +49,7 @@ public class CatalogContextSeed
     {
         var lvivBusinesses = new List<(string Name, string Cat, string Street, string Lat, string Long)>
         {
-            ("Lvivska Maisternia Shokoladu", "Desserts", "Serbska St, 3", "49.8413", "24.0322"),
+            ("SHOco.", "Bakery", "Uhorska St, 12", "49.8120223", "24.0403886"),
             ("Silpo Rynok", "Groceries", "Ploshcha Rynok, 1", "49.8417", "24.0312"),
             ("Baczewski Restaurant", "Meals", "Shevska St, 8", "49.8423", "24.0305"),
             ("Svoyi Bakery", "Bakery", "Staroievreiska St, 24", "49.8408", "24.0315"),
@@ -89,21 +89,34 @@ public class CatalogContextSeed
 
             var businessGuid = Guid.Parse($"602d2149-e773-f2a3-990b-47b{index:D2}0000000");
 
+            var business = new Business
+            {
+                Id = businessGuid,
+                BusinessId = businessGuid.ToString(),
+                Name = b.Name,
+                Description = $"Найкращий вибір у категорії {b.Cat} у Львові",
+                LogoUrl = logoUrl,
+                CoverImageUrl = coverUrl,
+                Address = new BusinessAddress { Street = b.Street, City = "Lviv", PostalCode = "79000", Country = "Ukraine" },
+                Location = new BusinessLocation { Latitude = double.Parse(b.Lat), Longitude = double.Parse(b.Long) },
+                IsActive = true,
+                IsVerified = true
+            };
+
+            if (b.Name == "SHOco.")
+            {
+                business.Description = "Сучасна кондитерська з відкритою кухнею. Ми печемо найкращі круасани, робимо легендарні макарони та готуємо сніданки весь день.";
+                business.Phone = "+380504307575";
+                business.Email = "shoco.lviv@gmail.com";
+                business.Website = "https://shoco.ua/";
+                business.LogoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiQsv7tmwdnYtMA2duXmrHPglFBZmb79zMtg&s";
+                business.CoverImageUrl = "https://tickikids.ams3.cdn.digitaloceanspaces.com/z1.cache/gallery/organizations/1579/image_5aa586241ed0d6.29769662.jpg";
+            }
+
             return new BusinessSeedInfo
             {
                 CategoryName = b.Cat,
-                Business = new Business
-                {
-                    Id = businessGuid,
-                    BusinessId = businessGuid.ToString(),
-                    Name = b.Name,
-                    Description = $"Найкращий вибір у категорії {b.Cat} у Львові",
-                    LogoUrl = logoUrl,
-                    CoverImageUrl = coverUrl,
-                    Address = new BusinessAddress { Street = b.Street, City = "Lviv", PostalCode = "79000", Country = "Ukraine" },
-                    Location = new BusinessLocation { Latitude = double.Parse(b.Lat), Longitude = double.Parse(b.Long) },
-                    IsActive = true
-                }
+                Business = business
             };
         });
     }
@@ -118,6 +131,14 @@ public class CatalogContextSeed
             var biz = info.Business;
             var category = categories.FirstOrDefault(c => c.Name == info.CategoryName) ?? categories.First();
 
+            string[] productNames = info.Business.Name == "SHOco." 
+                ? new[] { "Surprise Bag: Fresh Croissants", "Surprise Bag: Macarons & Eclairs" }
+                : new[] { $"{biz.Name} Surprise Bag 1", $"{biz.Name} Surprise Bag 2" };
+
+            string[] productDescriptions = info.Business.Name == "SHOco." 
+                ? new[] { "Набір свіжоспечених круасанів (класичні, мигдалеві, шоколадні).", "Мікс фірмових макаронів та ніжних еклеров." }
+                : new[] { $"Свіжа пропозиція від {biz.Name}. Тільки сьогодні!", $"Свіжа пропозиція від {biz.Name}. Тільки сьогодні!" };
+
             string[] productImages = info.CategoryName switch {
                 "Bakery" => new[] { "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=500&q=80", "https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=500&q=80" },
                 "Groceries" => new[] { "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=500&q=80", "https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=500&q=80" },
@@ -128,16 +149,16 @@ public class CatalogContextSeed
                 _ => new[] { "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&q=80", "https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=500&q=80" }
             };
 
-            for (int i = 1; i <= 2; i++)
+            for (int i = 0; i < 2; i++)
             {
                 products.Add(new Product
                 {
                     Id = Guid.Parse($"602d2149-e773-f2a3-990b-47e{productIndex:D2}0000000"),
                     BusinessId = biz.BusinessId,
                     CategoryId = category.Id.ToString(),
-                    Name = $"{biz.Name} Surprise Bag {i}",
-                    Description = $"Свіжа пропозиція від {biz.Name}. Тільки сьогодні!",
-                    ImageUrl = productImages[i - 1],
+                    Name = productNames[i],
+                    Description = productDescriptions[i],
+                    ImageUrl = productImages[i],
                     Price = 199.00M + (productIndex * 20),
                     OriginalPrice = 599.00M + (productIndex * 20),
                     Quantity = 2 + i,
