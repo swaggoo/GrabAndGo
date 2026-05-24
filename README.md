@@ -1,12 +1,12 @@
 # 📘 Grab&Go (Backend)
 
-> HoreCA Мобільний застосунок для пошуку та замовлення не реалізованих товарів (Food Rescue Platform)
+> HoreCA Застосунок для пошуку та замовлення не реалізованих товарів (Food Rescue Platform)
 
 ---
 
 ## 👤 Автор
 
-**ПІБ:** Максим Попайло Богданович  
+**ПІБ:** Нирка Назар Іванович
 **Група:** ФЕІ-45  
 **Керівник:** доцент Соколовський Богдан Степанович  
 **Дата виконання:** 23.05.2026
@@ -63,7 +63,6 @@
 ### 1. Встановлення інструментів
 
 Переконайтесь, що у вас встановлено:
-- **.NET 8.0 SDK**
 - **Docker Desktop**
 - **Python 3.x** (для навантажувальних тестів)
 
@@ -86,9 +85,9 @@ docker-compose up -d
 
 Після запуску документація Swagger доступна за адресами:
 - **Gateway (All):** `http://localhost:5010/docs/services`
-- **Identity:** `http://localhost:5001/swagger`
-- **Catalog:** `http://localhost:5002/swagger`
-- **Order:** `http://localhost:5003/swagger`
+- **Identity:** `http://localhost:5001`
+- **Catalog:** `http://localhost:5002`
+- **Order:** `http://localhost:5003`
 
 ---
 
@@ -131,7 +130,7 @@ GrabAndGo/
 |----------|---------|
 | **Конфлікт при бронюванні** | Впроваджено **Optimistic Concurrency Control** (RowVersion) у PostgreSQL |
 | **Втрата повідомлень** | Використано патерн **Transactional Outbox** для гарантованої доставки в RabbitMQ |
-| **Складні запити в MongoDB** | Реалізовано патерн **Specification** для гнучкої фільтрації та пошуку |
+| **Складні запити** | Реалізовано патерн **Specification** для гнучкої фільтрації та пошуку |
 | **Latency у мікросервісах** | Налаштовано **Distributed Tracing** (Tempo) для пошуку вузьких місць |
 
 ---
