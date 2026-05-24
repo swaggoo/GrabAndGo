@@ -2,13 +2,17 @@ using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Scalar.AspNetCore;
 using System.Text;
+using GrabAndGo.BuildingBlocks.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.ConfigureLogging("gateway");
 
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
 builder.Services.AddOcelot(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddObservability(builder.Configuration, "gateway");
 
 var app = builder.Build();
 

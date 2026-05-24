@@ -1,8 +1,10 @@
+using System.Text.Json;
 using GrabAndGo.Order.Application.Dtos;
 using GrabAndGo.Order.Application.Extensions;
 using GrabAndGo.Order.Domain.Entities;
 using GrabAndGo.Order.Domain.Enums;
 using GrabAndGo.Order.Domain.Repositories;
+using GrabAndGo.BuildingBlocks.Events;
 using MediatR;
 
 namespace GrabAndGo.Order.Application.Commands;
@@ -14,7 +16,6 @@ public class CreateOrderHandler(IOrderRepository orderRepository) : IRequestHand
         var product = await orderRepository.GetProductByIdAsync(request.ProductId);
         if (product == null)
         {
-            // For MVP we throw, in production we'd return a Result object or custom exception
             throw new KeyNotFoundException($"Product with ID {request.ProductId} not found.");
         }
 
@@ -31,9 +32,25 @@ public class CreateOrderHandler(IOrderRepository orderRepository) : IRequestHand
             Date = DateTime.UtcNow
         };
         
-        await orderRepository.AddAsync(order);
-        await orderRepository.SaveChangesAsync();
+        var @event = new OrderSubmittedEvent(
+            order.Id,
+            order.ProductId,
+            order.UserId,
+            order.TotalAmount
+        );
 
+        var outboxMessage = new OutboxMessage
+        {
+            Id = Guid.NewGuid(),
+            Type = typeof(OrderSubmittedEvent).FullName!,
+            Content = JsonSerializer.Serialize(@event),
+            OccurredOnUtc = DateTime.UtcNow
+        };
+
+        await orderRepository.AddAsync(order);
+        await orderRepository.AddOutboxMessageAsync(outboxMessage);
+        await orderRepository.SaveChangesAsync();
+        
         return order.ToDto();
     }
 }

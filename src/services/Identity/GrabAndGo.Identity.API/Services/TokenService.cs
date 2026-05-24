@@ -17,13 +17,14 @@ public class TokenService(IConfiguration configuration) : ITokenService
     {
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Email, user.Email!)
+            new(JwtRegisteredClaimNames.Sub, user.Id),
+            new(JwtRegisteredClaimNames.Email, user.Email!),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
         foreach (var role in roles)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
+            claims.Add(new Claim("role", role));
         }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] ?? "super_secret_key_that_is_long_enough_123!"));
@@ -31,9 +32,9 @@ public class TokenService(IConfiguration configuration) : ITokenService
         var expires = DateTime.Now.AddDays(Convert.ToDouble(configuration["Jwt:ExpireDays"] ?? "7"));
 
         var token = new JwtSecurityToken(
-            configuration["Jwt:Issuer"],
-            configuration["Jwt:Audience"],
-            claims,
+            issuer: configuration["Jwt:Issuer"] ?? "GrabAndGo",
+            audience: configuration["Jwt:Audience"] ?? "GrabAndGoUsers",
+            claims: claims,
             expires: expires,
             signingCredentials: creds
         );

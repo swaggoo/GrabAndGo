@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\GrabAndGo.BuildingBlocks\GrabAndGo.BuildingBlocks.csproj" />
     <ProjectReference Include="..\GrabAndGo.Analytics.Application\GrabAndGo.Analytics.Application.csproj" />
     <ProjectReference Include="..\GrabAndGo.Analytics.Infrastructure\GrabAndGo.Analytics.Infrastructure.csproj" />
   </ItemGroup>

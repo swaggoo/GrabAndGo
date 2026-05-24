@@ -3,6 +3,7 @@ using FluentValidation;
 using GrabAndGo.BuildingBlocks.Auth;
 using GrabAndGo.BuildingBlocks.MassTransit;
 using GrabAndGo.BuildingBlocks.Middleware;
+using GrabAndGo.BuildingBlocks.Observability;
 using GrabAndGo.Identity.API.Behaviors;
 using GrabAndGo.Identity.API.Data;
 using GrabAndGo.Identity.API.Features.Auth;
@@ -19,8 +20,11 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.ConfigureLogging("identity-api");
+
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddObservability(builder.Configuration, "identity-api");
 builder.Services.AddSwaggerGen(options =>
 {
     options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));

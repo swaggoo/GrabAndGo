@@ -14,5 +14,10 @@ public interface IOrderRepository
     Task UpdateProductAsync(Product product);
     Task DeleteProductAsync(Guid id);
 
+    Task AddOutboxMessageAsync(OutboxMessage message);
+
+    Task<bool> IsInboxMessageProcessedAsync(Guid messageId, string consumerName);
+    Task AddInboxMessageAsync(InboxMessage message);
+
     Task SaveChangesAsync();
 }

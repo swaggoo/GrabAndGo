@@ -1,14 +1,18 @@
 using GrabAndGo.Catalog.API.Endpoints;
 using GrabAndGo.Catalog.API.Extensions;
 using GrabAndGo.BuildingBlocks.Middleware;
+using GrabAndGo.BuildingBlocks.Observability;
 using GrabAndGo.Catalog.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.ConfigureLogging("catalog-api");
+
 // Add services to the container.
 builder.Services.AddCatalogServices(builder.Configuration);
+builder.Services.AddObservability(builder.Configuration, "catalog-api");
 
 var app = builder.Build();
 

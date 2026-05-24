@@ -59,6 +59,22 @@ public class OrderRepository(OrderDbContext context) : IOrderRepository
         }
     }
 
+    public async Task AddOutboxMessageAsync(OutboxMessage message)
+    {
+        await context.OutboxMessages.AddAsync(message);
+    }
+
+    public async Task<bool> IsInboxMessageProcessedAsync(Guid messageId, string consumerName)
+    {
+        return await context.InboxMessages
+            .AnyAsync(m => m.Id == messageId && m.ConsumerName == consumerName);
+    }
+
+    public async Task AddInboxMessageAsync(InboxMessage message)
+    {
+        await context.InboxMessages.AddAsync(message);
+    }
+
     public async Task SaveChangesAsync()
     {
         await context.SaveChangesAsync();

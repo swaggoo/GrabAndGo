@@ -1,6 +1,9 @@
 using Scalar.AspNetCore;
+using GrabAndGo.BuildingBlocks.Observability;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.ConfigureLogging("analytics-api");
 
 // Add services to the container.
 
@@ -8,6 +11,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddObservability(builder.Configuration, "analytics-api");
 
 var app = builder.Build();
 

@@ -1,14 +1,18 @@
 using GrabAndGo.Order.API.Endpoints;
 using GrabAndGo.Order.API.Extensions;
 using GrabAndGo.BuildingBlocks.Middleware;
+using GrabAndGo.BuildingBlocks.Observability;
 using GrabAndGo.Order.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.ConfigureLogging("order-api");
+
 // Add services to the container.
 builder.Services.AddOrderServices(builder.Configuration);
+builder.Services.AddObservability(builder.Configuration, "order-api");
 
 var app = builder.Build();
 

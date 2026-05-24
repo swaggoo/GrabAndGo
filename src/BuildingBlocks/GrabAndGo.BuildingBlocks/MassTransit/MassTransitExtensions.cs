@@ -7,14 +7,11 @@ namespace GrabAndGo.BuildingBlocks.MassTransit;
 
 public static class MassTransitExtensions
 {
-    public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration, Assembly? assembly = null)
+    public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration, Action<IBusRegistrationConfigurator>? configure = null)
     {
         services.AddMassTransit(config =>
         {
-            if (assembly != null)
-            {
-                config.AddConsumers(assembly);
-            }
+            configure?.Invoke(config);
 
             config.UsingRabbitMq((context, b) =>
             {
@@ -30,5 +27,13 @@ public static class MassTransitExtensions
         });
 
         return services;
+    }
+
+    public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration, Assembly assembly)
+    {
+        return services.AddMessageBus(configuration, config =>
+        {
+            config.AddConsumers(assembly);
+        });
     }
 }

@@ -1,11 +1,15 @@
 using GrabAndGo.BuildingBlocks.Auth;
 using GrabAndGo.BuildingBlocks.Middleware;
+using GrabAndGo.BuildingBlocks.Observability;
 using GrabAndGo.BuildingBlocks.Responses;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.ConfigureLogging("media-api");
+
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddObservability(builder.Configuration, "media-api");
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
